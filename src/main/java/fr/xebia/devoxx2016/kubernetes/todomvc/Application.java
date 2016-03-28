@@ -34,7 +34,7 @@ public class Application {
         Spark.staticFileLocation("/static");
 
         get("/resetdb", (req, res) -> {
-            Connection conn = r.connection().hostname("192.168.99.100").port(28015).connect();
+            Connection conn = r.connection().hostname(System.getenv("RETHINKDB_SERVICE_HOST")).port(28015).connect();
             try {
                 r.dbDrop("tododb").run(getConnection());
             } catch (Exception e) {}
@@ -52,11 +52,8 @@ public class Application {
 
         post("/api/todos", (request, response) -> {
             Todo todo = jsonToObject(request.body(), Todo.class);
-//            todo.id = System.currentTimeMillis();
             HashMap<String, Object> result = r.table("todo").insert(
-//              r.hashMap("id", todo.id)
                     r.hashMap("title", todo.title)
-//                    .with("title", todo.title)
                             .with("completed", todo.completed)
             ).run(getConnection());
             todo.id = ((List<String>)result.get("generated_keys")).get(0);
@@ -113,7 +110,7 @@ public class Application {
     }
 
     private static Connection getConnection() {
-        return r.connection().hostname("192.168.99.100").port(28015).db("tododb").connect();
+        return r.connection().hostname(System.getenv("RETHINKDB_SERVICE_HOST")).port(28015).db("tododb").timeout(3).connect();
     }
 
     public static <T> T jsonToObject(String json, Class<T> clazz) {

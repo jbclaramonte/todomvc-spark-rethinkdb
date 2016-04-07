@@ -1,5 +1,5 @@
 # todomvc-spark-rethinkdb
-
+```
 docker build -t jbclaramonte/todomvc-spark-rethinkdb .
 docker push jbclaramonte/todomvc-spark-rethinkdb
 
@@ -18,3 +18,4 @@ kubectl exec -it <pod instance> sh
 ## once inside the container run 'env' command and check the env var
 
 kubectl expose rc/todomvc-spark-rethinkdb --port=80 --target-port=4567 --type=LoadBalancer
+```
